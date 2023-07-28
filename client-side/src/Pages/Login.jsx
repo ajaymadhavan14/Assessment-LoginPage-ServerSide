@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
-import "./Login-P.css";
+import { message } from "antd";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+// import "./Login-P.css";
 function Login() {
+  const navigate = useNavigate()
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
@@ -24,47 +28,57 @@ function Login() {
     // }
 
     if (formData.email && formData.password) {
-        const regEmail = /^[a-zA-Z0-9.!#$%&'+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)$/;
-        if (regEmail.test(formData.email)) {
+      const regEmail =
+        /^[a-zA-Z0-9.!#$%&'+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)$/;
+      if (regEmail.test(formData?.email)) {
+        if (formData?.password.length >= 6) {
+          axios
+            .post("http://localhost:5000/api/data", formData)
+            .then((response) => {
+              console.log(response.data);
+              if (response?.data?.status == "success") {
+                message.success("successfully Login");
+                navigate('/home')
+              }
+            });
 
-          if (formData.password.length >= 6) {
-  
-            // axios.post('/api/login', data).then((response) => {
-            //   if (!response.data.auth) {
-            //     swal('sorry', response.data.message, 'error');
-            //   } else {
-            //     localStorage.setItem('userToken', response.data.token);
-            //     navigate('/home');
-            //   }
-            // });
-          } else {
-       alert("Invalid credentials.  Minimum 6 character");
-
-          }
+          // axios.post('/api/login', data).then((response) => {
+          //   if (!response.data.auth) {
+          //     swal('sorry', response.data.message, 'error');
+          //   } else {
+          //     localStorage.setItem('userToken', response.data.token);
+          //     navigate('/home');
+          //   }
+          // });
         } else {
-         alert("Invalid credentials.  Please enter valid Email");
-
+          message.warning("Password Minimum 6 character");
+          // alert("Invalid credentials.  Minimum 6 character");
         }
       } else {
-         alert("All feilds are required. Please try again.");
-
+        message.warning("Please enter valid Email");
+        // alert("Invalid credentials.  Please enter valid Email");
       }
+    } else {
+      message.warning("All feilds are required. Please try again.");
+      // alert("All feilds are required. Please try again.");
+    }
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
   };
 
-
-
   return (
-    <div className="App">
-      <form className="login-form" onSubmit={handleLogin}>
-        <h1 className="text-2xl">LOGIN</h1>
-        <div className="form-group">
+    <div className="App flex justify-center items-center h-screen bg-slate-300 p-5 ">
+      <form
+        className="login-form rounded-xl md:rounded-2xl space-y-5 shadow-2xl font-medium bg-white p-5 pr-9 py-12 w-[700px]"
+        onSubmit={handleLogin}
+      >
+        <h1 className="text-4xl font-normal">LOGIN</h1>
+        <div className="form-group flex flex-col gap-2">
           <label htmlFor="email">Email address</label>
           <input
-          className="h-12"
+            className=" w-full px-4 py-3 rounded-md text-black border border-gray-300"
             type="text"
             id="email"
             name="email"
@@ -74,10 +88,10 @@ function Login() {
             onChange={handleInputChange}
           />
         </div>
-        <div className="form-group">
+        <div className="form-group flex flex-col gap-2">
           <label htmlFor="password">Password</label>
           <input
-            className="h-12"
+            className="w-full px-4 py-3 rounded-md border border-gray-300"
             type="password"
             id="password"
             name="password"
@@ -88,22 +102,22 @@ function Login() {
           />
         </div>
         <div className="flex justify-between">
-            <div className="flex">
-                <input type="checkbox" name="" id="" />
-                <h5>Remember Me</h5>
-            </div>
-            <div >
-           <h5> Forget Password ?</h5>
-            </div>
+          <div className="flex  space-x-2">
+            <input type="checkbox" className="w-4 rounded-lg" name="" id="" />
+            <h5>Remember Me</h5>
+          </div>
+          <div>
+            <h5 className="cursor-pointer"> Forget Password?</h5>
+          </div>
         </div>
         <div className="flex justify-center">
           <button className="w-24 bg-red-700 hover:bg-red-500 text-white font-bold py-2 px-4 border border-red-500 rounded">
             Login
           </button>
         </div>
-        <div className="flex justify-center">
-            <h4>Not Registered?</h4>
-            <h4 className="text-red-600">Click here to join</h4>
+        <div className="flex justify-center gap-2">
+          <h4>Not Registered?</h4>
+          <h4 className="text-red-700 cursor-pointer">Click here to join</h4>
         </div>
       </form>
 
