@@ -3,9 +3,9 @@ import Modal from "react-modal";
 import { message } from "antd";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-// import "./Login-P.css";
+import BaseURL from "../Api/Api";
 function Login() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
@@ -20,47 +20,30 @@ function Login() {
   const handleLogin = (e) => {
     e.preventDefault();
 
-    // Simulate server-side validation (replace with actual server-side validation)
-    // if (formData.email === "admin" && formData.password === "password") {
-    //   setIsModalOpen(true);
-    // } else {
-    //   alert("Invalid credentials. Please try again.");
-    // }
-
     if (formData.email && formData.password) {
       const regEmail =
         /^[a-zA-Z0-9.!#$%&'+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)$/;
       if (regEmail.test(formData?.email)) {
         if (formData?.password.length >= 6) {
           axios
-            .post("http://localhost:5000/api/data", formData)
+            .post(`${BaseURL}/api/data`, formData)
             .then((response) => {
               console.log(response.data);
               if (response?.data?.status == "success") {
                 message.success("successfully Login");
-                navigate('/home')
+                navigate("/home");
+              } else {
+                message.warning("Login Failed");
               }
             });
-
-          // axios.post('/api/login', data).then((response) => {
-          //   if (!response.data.auth) {
-          //     swal('sorry', response.data.message, 'error');
-          //   } else {
-          //     localStorage.setItem('userToken', response.data.token);
-          //     navigate('/home');
-          //   }
-          // });
         } else {
           message.warning("Password Minimum 6 character");
-          // alert("Invalid credentials.  Minimum 6 character");
         }
       } else {
         message.warning("Please enter valid Email");
-        // alert("Invalid credentials.  Please enter valid Email");
       }
     } else {
       message.warning("All feilds are required. Please try again.");
-      // alert("All feilds are required. Please try again.");
     }
   };
 

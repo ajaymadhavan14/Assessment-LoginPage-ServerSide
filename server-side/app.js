@@ -1,22 +1,22 @@
-import express  from "express";
-import logger from "morgan"
-import cors from "cors"
+import express from "express";
+import logger from "morgan";
+import cors from "cors";
 
-const app = express()
-// 
-app.use(cors())
+const app = express();
+app.use(cors());
 
 app.use(express.urlencoded({ extended: false }));
-app.use(express.json({ limit: '50mb' }));
-app.use(logger('dev'));
+app.use(express.json({ limit: "50mb" }));
+app.use(logger("dev"));
 
-
-app.post('/api/data', (req, res) => {
-    console.log(req.body);
-    // Simulate data retrieval from a database
-    res.json({status:"success"});
-
-  });
+app.post("/api/data", (req, res) => {
+  const { email, password } = req.body;
+  if (email, password) {
+    res.json({ status: "success" });
+  } else {
+    res.json({ status: "failed" });
+  }
+});
 
 const PORT = 5000;
 app.listen(PORT, () => {
